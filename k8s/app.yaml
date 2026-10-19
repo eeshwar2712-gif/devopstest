@@ -1,7 +1,6 @@
 # Stage 5: Kubernetes. Run locally with kind or minikube.
 #   kind create cluster
-#   docker build -t devops-app:local ./app && kind load docker-image devops-app:local
-#   kubectl apply -f k8s/
+#   kubectl apply -f k8s/        (the image is pulled from GHCR, no local build needed)
 #   kubectl port-forward svc/web 8080:80
 apiVersion: v1
 kind: ConfigMap
@@ -58,7 +57,8 @@ spec:
       enableServiceLinks: false
       containers:
         - name: web
-          image: devops-app:local
+          # CI rewrites this tag to the commit SHA after every successful build; Argo CD then deploys it
+          image: ghcr.io/eeshwar2712-gif/devopstest:84fe4d740ea29f1e6dfae578bb595c26ee33a62b
           imagePullPolicy: IfNotPresent
           ports: [{ containerPort: 5000 }]
           envFrom:
