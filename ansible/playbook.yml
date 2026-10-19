@@ -5,7 +5,7 @@
   hosts: web
   become: true
   vars:
-    image: ghcr.io/eeshwarg27-star/devops-test:latest
+    image: ghcr.io/eeshwar2712-gif/devopstest:latest
   tasks:
     - name: Install Docker
       ansible.builtin.apt:

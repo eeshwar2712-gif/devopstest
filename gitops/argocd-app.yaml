@@ -9,7 +9,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/eeshwarg27-star/devops-test.git
+    repoURL: https://github.com/eeshwar2712-gif/devopstest.git
     targetRevision: main
     path: k8s
   destination:
