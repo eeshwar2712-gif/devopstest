@@ -38,7 +38,7 @@ jobs:
       # 2. Dependency + image vulnerability scanning: fails on fixable HIGH/CRITICAL issues
       - name: Build image for scanning
         run: docker build -t scan-target:ci ./app
-      - uses: aquasecurity/trivy-action@v0.28.0
+      - uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: scan-target:ci
           severity: HIGH,CRITICAL
@@ -46,7 +46,7 @@ jobs:
           exit-code: "1"
 
       # 3. Misconfiguration scanning of Dockerfile + Kubernetes manifests (report only)
-      - uses: aquasecurity/trivy-action@v0.28.0
+      - uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: config
           scan-ref: .
