@@ -9,7 +9,9 @@
   tasks:
     - name: Install Docker
       ansible.builtin.apt:
-        name: docker.io
+        name:
+          - docker.io
+          - python3-requests # needed by the community.docker modules on the target
         state: present
         update_cache: true
 
@@ -25,7 +27,7 @@
         image: "{{ image }}"
         state: started
         restart_policy: always
-        pull: true
+        pull: "{{ pull_image | default(true) | bool }}"  # set -e pull_image=false to use a locally loaded image
         published_ports: ["80:5000"]
         env:
           APP_VERSION: ansible
