@@ -79,7 +79,7 @@ spec:
       containers:
         - name: web
           # CI rewrites this tag to the commit SHA after every successful build; Argo CD then deploys it
-          image: ghcr.io/eeshwar2712-gif/devopstest:45718a3d7f493a0aed542cf2d7223a80df413858
+          image: ghcr.io/eeshwar2712-gif/devopstest:8e2c849d45baae646b4b925cb1ae375e89bd7e58
           imagePullPolicy: IfNotPresent
           ports: [{ containerPort: 5000 }]
           envFrom:
