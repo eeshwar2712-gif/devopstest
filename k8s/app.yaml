@@ -22,10 +22,26 @@ spec:
     metadata:
       labels: { app: redis }
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        seccompProfile: { type: RuntimeDefault }
       containers:
         - name: redis
           image: redis:7-alpine
           ports: [{ containerPort: 6379 }]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+          resources:
+            requests: { cpu: 25m, memory: 32Mi }
+            limits: { cpu: 100m, memory: 64Mi }
+          volumeMounts:
+            - { name: data, mountPath: /data } # redis needs one writable dir; data is disposable here
+      volumes:
+        - { name: data, emptyDir: {} }
 ---
 apiVersion: v1
 kind: Service
@@ -55,6 +71,11 @@ spec:
     spec:
       # k8s injects env vars like REDIS_PORT=tcp://... for every Service; that clashes with our own config
       enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001 # matches the fixed UID in app/Dockerfile
+        runAsGroup: 10001
+        seccompProfile: { type: RuntimeDefault }
       containers:
         - name: web
           # CI rewrites this tag to the commit SHA after every successful build; Argo CD then deploys it
@@ -69,9 +90,20 @@ spec:
           livenessProbe:
             httpGet: { path: /health, port: 5000 }
             initialDelaySeconds: 10
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
           resources:
             requests: { cpu: 50m, memory: 64Mi }
             limits: { cpu: 200m, memory: 128Mi }
+          # read-only root filesystem: give gunicorn and the metrics library scratch space
+          volumeMounts:
+            - { name: tmp, mountPath: /tmp }
+            - { name: metrics, mountPath: /tmp/metrics }
+      volumes:
+        - { name: tmp, emptyDir: {} }
+        - { name: metrics, emptyDir: {} }
 ---
 apiVersion: v1
 kind: Service

@@ -12,7 +12,7 @@ COPY app.py gunicorn_conf.py ./
 ENV PROMETHEUS_MULTIPROC_DIR=/tmp/metrics
 
 # run as non-root (security best practice)
-RUN useradd -r appuser && mkdir -p /tmp/metrics && chown appuser /tmp/metrics
+RUN useradd -r -u 10001 appuser && mkdir -p /tmp/metrics && chown appuser /tmp/metrics
 USER appuser
 
 EXPOSE 5000
