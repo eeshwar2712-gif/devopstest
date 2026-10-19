@@ -8,7 +8,7 @@ kind: ConfigMap
 metadata:
   name: web-config
 data:
-  APP_VERSION: "k8s-v1"
+  APP_VERSION: "k8s-v2"
   REDIS_HOST: "redis"
 ---
 apiVersion: apps/v1
