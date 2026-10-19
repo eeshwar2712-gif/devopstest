@@ -1,0 +1,13 @@
+groups:
+  - name: web
+    rules:
+      - alert: WebDown
+        expr: up{job="web"} == 0
+        for: 30s
+        labels: { severity: critical }
+        annotations:
+          summary: "web app is down"
+      - alert: HighTraffic
+        expr: rate(app_requests_total[1m]) > 50
+        for: 1m
+        labels: { severity: warning }

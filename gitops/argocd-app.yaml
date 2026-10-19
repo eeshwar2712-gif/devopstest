@@ -1,0 +1,21 @@
+# Stage 8 (advanced): GitOps. Argo CD watches your Git repo and keeps the cluster in sync.
+# Install: kubectl create ns argocd && kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+# Then edit repoURL and apply this file. Change replicas in k8s/app.yaml, push, and watch the cluster follow.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devops-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/YOUR_GITHUB_USER/YOUR_REPO.git
+    targetRevision: main
+    path: k8s
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

@@ -1,0 +1,19 @@
+# Stage 2: run the app + redis with one command:  docker compose up --build
+services:
+  web:
+    build: ./app
+    ports:
+      - "5000:5000"
+    environment:
+      REDIS_HOST: redis
+      APP_VERSION: compose
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:

@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s # default is 1m; shortened so alerts fire quickly in this lab
+
+rule_files:
+  - alerts.yml
+
+scrape_configs:
+  - job_name: web
+    static_configs:
+      - targets: ["host.docker.internal:5000"]

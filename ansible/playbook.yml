@@ -1,0 +1,31 @@
+# Stage 7: Configuration management. Provision a real Ubuntu VM (cloud or local VM) and run:
+#   ansible-playbook -i inventory.ini playbook.yml
+# (Ansible runs on Linux/macOS/WSL, not native Windows.)
+- name: Deploy devops app to servers
+  hosts: web
+  become: true
+  vars:
+    image: ghcr.io/YOUR_GITHUB_USER/YOUR_REPO:latest
+  tasks:
+    - name: Install Docker
+      ansible.builtin.apt:
+        name: docker.io
+        state: present
+        update_cache: true
+
+    - name: Ensure Docker is running
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Run app container
+      community.docker.docker_container:
+        name: web
+        image: "{{ image }}"
+        state: started
+        restart_policy: always
+        pull: true
+        published_ports: ["80:5000"]
+        env:
+          APP_VERSION: ansible
